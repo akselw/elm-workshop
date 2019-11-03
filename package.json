@@ -1,0 +1,22 @@
+{
+  "name": "elm-workshop",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "Aksel Wester",
+  "license": "ISC",
+  "dependencies": {
+    "elm": "^0.19.0-no-deps",
+    "express": "^4.17.1",
+    "lowdb": "^1.0.0",
+    "parcel-bundler": "^1.12.3",
+    "shortid": "^2.2.15"
+  },
+  "devDependencies": {
+    "elm-hot": "^1.1.2",
+    "node-elm-compiler": "^5.0.4"
+  }
+}
