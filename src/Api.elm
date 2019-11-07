@@ -1,7 +1,8 @@
-module Api exposing (getArticle, getArticles, writeToServerLog)
+module Api exposing (getArticle, getArticles, getComments, writeToServerLog)
 
 import Article exposing (Article)
 import ArticleId exposing (ArticleId)
+import Comment exposing (Comment)
 import Http
 import Json.Decode
 import LogElement exposing (LogElement)
@@ -20,6 +21,14 @@ getArticle msg articleId =
     Http.get
         { url = "/api/article/" ++ ArticleId.toString articleId
         , expect = Http.expectJson msg Article.decode
+        }
+
+
+getComments : (Result Http.Error (List Comment) -> msg) -> ArticleId -> Cmd msg
+getComments msg articleId =
+    Http.get
+        { url = "/api/article/" ++ ArticleId.toString articleId ++ "/comments"
+        , expect = Http.expectJson msg (Json.Decode.list Comment.decode)
         }
 
 

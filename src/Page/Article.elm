@@ -45,7 +45,9 @@ update msg model =
                         { article = article
                         , comments = []
                         }
-                    , Cmd.none
+                    , article
+                        |> Article.id
+                        |> Api.getComments FetchedComments
                     )
 
                 Err error ->
