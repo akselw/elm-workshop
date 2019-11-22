@@ -14,6 +14,8 @@ import Html exposing (..)
 import Html.Attributes exposing (href)
 import Http
 import LogElement
+import ViewElements.Container as Container
+import ViewElements.Header as Header
 
 
 
@@ -72,21 +74,29 @@ viewDocument model =
 
 view : Model -> List (Html Msg)
 view model =
+    [ Header.header
+    , Container.mainContent
+        [ viewContent model
+        ]
+    ]
+
+
+viewContent : Model -> Html Msg
+viewContent model =
     case model of
         Loading ->
-            [ text "Spinner" ]
+            text "Spinner"
 
         Failure error ->
-            [ text "error" ]
+            text "error"
 
         Success successModel ->
             viewSuccess successModel
 
 
-viewSuccess : SuccessModel -> List (Html Msg)
+viewSuccess : SuccessModel -> Html Msg
 viewSuccess successModel =
-    [ viewArticles successModel.articles
-    ]
+    viewArticles successModel.articles
 
 
 viewArticles : List Article -> Html Msg
@@ -97,7 +107,10 @@ viewArticles articles =
 
 viewArticle : Article -> Html Msg
 viewArticle article =
-    li [] [ a [ href ("/article/" ++ (Article.id >> ArticleId.toString) article) ] [ text (Article.title article) ] ]
+    li []
+        [ a [ href ("/article/" ++ (Article.id >> ArticleId.toString) article) ]
+            [ text (Article.title article) ]
+        ]
 
 
 

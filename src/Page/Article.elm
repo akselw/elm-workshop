@@ -11,6 +11,8 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http
 import LogElement
+import ViewElements.Container as Container
+import ViewElements.Header as Header
 
 
 type Model
@@ -78,21 +80,28 @@ viewDocument model =
 
 view : Model -> List (Html Msg)
 view model =
+    [ Header.header
+    , Container.mainContent
+        [ viewContent model ]
+    ]
+
+
+viewContent : Model -> Html Msg
+viewContent model =
     case model of
         Loading ->
-            [ text "Spinner" ]
+            text "Spinner"
 
         Failure error ->
-            [ text "error" ]
+            text "error"
 
         Success successModel ->
             viewSuccess successModel
 
 
-viewSuccess : SuccessModel -> List (Html Msg)
+viewSuccess : SuccessModel -> Html Msg
 viewSuccess successModel =
-    [ viewArticle successModel.article
-    ]
+    viewArticle successModel.article
 
 
 viewArticle : Article -> Html Msg
