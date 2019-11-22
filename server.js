@@ -19,10 +19,10 @@ const parseArticle = (text) => {
     return {
         ...metadata,
         body: body
-    }
+    };
 };
 
-const readArticles = (dirname) =>  {
+const readArticles = (dirname) => {
     const filenames = fs.readdirSync(dirname);
     return filenames.map((filename) => {
         const file = fs.readFileSync(dirname + filename, 'utf-8');
@@ -45,8 +45,12 @@ const writeArticleToDB = (article, id) => {
 };
 
 const writeArticlesToDB = (listOfArticles, firstArticleId) => {
-    listOfArticles.forEach((article) => {
-        writeArticleToDB(article, shortid.generate());
+    listOfArticles.forEach((article, index) => {
+        if (index === 0) {
+            writeArticleToDB(article, firstArticleId);
+        } else {
+            writeArticleToDB(article, shortid.generate());
+        }
     });
 };
 
@@ -60,30 +64,35 @@ if (!databaseExists) {
     db.get('comments')
         .push({
             id: firstCommentId,
+            username: 'User 1',
             articleId: articleId,
             commentOnCommentWithId: null,
-            text: 'LowDB SUXXX!'
+            text: 'Functional programming SUXXX!'
         })
         .push({
             id: firstAnswerId,
+            username: 'User 2',
             articleId: articleId,
             commentOnCommentWithId: firstCommentId,
             text: 'No, you suck!!'
         })
         .push({
             id: shortid.generate(),
+            username: 'User 3',
             articleId: articleId,
             commentOnCommentWithId: firstAnswerId,
             text: 'I like him!'
         })
         .push({
             id: shortid.generate(),
+            username: 'User 4',
             articleId: articleId,
             commentOnCommentWithId: firstCommentId,
             text: 'I agree'
         })
         .push({
             id: shortid.generate(),
+            username: 'User 5',
             articleId: articleId,
             commentOnCommentWithId: null,
             text: 'I like modifying global variables 😊'
@@ -104,6 +113,7 @@ const toUnnested = (comment) => {
     console.log({ comment });
     return ({
         id: comment.id,
+        username: comment.username,
         text: comment.text
     });
 };
@@ -116,6 +126,7 @@ const toNested = (comments) => {
 
 const findSubcomments = (comment, comments) => ({
     id: comment.id,
+    username: comment.username,
     text: comment.text,
     comments: comments
         .filter((subcomment) => subcomment.commentOnCommentWithId === comment.id)

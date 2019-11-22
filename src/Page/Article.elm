@@ -19,6 +19,7 @@ import ViewElements.Header as Header
 type Model
     = Loading
     | Failure Http.Error
+    | LoadingComments Article
     | Success SuccessModel
 
 
@@ -44,10 +45,7 @@ update msg model =
         FetchedArticle result ->
             case result of
                 Ok article ->
-                    ( Success
-                        { article = article
-                        , comments = []
-                        }
+                    ( LoadingComments article
                     , article
                         |> Article.id
                         |> Api.getComments FetchedComments
@@ -62,7 +60,27 @@ update msg model =
                     )
 
         FetchedComments result ->
-            ( model, Cmd.none )
+            case result of
+                Ok comments ->
+                    case model of
+                        LoadingComments article ->
+                            ( Success
+                                { article = article
+                                , comments = comments
+                                }
+                            , Cmd.none
+                            )
+
+                        Success successModel ->
+                            ( Success { successModel | comments = comments }
+                            , Cmd.none
+                            )
+
+                        _ ->
+                            ( model, Cmd.none )
+
+                Err error ->
+                    ( model, Cmd.none )
 
         ErrorLogged result ->
             ( model, Cmd.none )
@@ -84,27 +102,32 @@ view model =
     [ div [ class "app" ]
         [ Header.header
         , Container.mainContent
-            [ viewContent model ]
+            (viewContent model)
         ]
     ]
 
 
-viewContent : Model -> Html Msg
+viewContent : Model -> List (Html Msg)
 viewContent model =
     case model of
         Loading ->
-            text ""
+            [ text "" ]
 
-        Failure error ->
-            text "error"
+        LoadingComments _ ->
+            [ text "" ]
+
+        Failure _ ->
+            [ text "error" ]
 
         Success successModel ->
             viewSuccess successModel
 
 
-viewSuccess : SuccessModel -> Html Msg
+viewSuccess : SuccessModel -> List (Html Msg)
 viewSuccess successModel =
-    viewArticle successModel.article
+    [ viewArticle successModel.article
+    , viewComments successModel.comments
+    ]
 
 
 viewArticle : Article -> Html Msg
@@ -129,6 +152,44 @@ viewLead : Markdown -> Html msg
 viewLead markdownContent =
     div [ class "lead" ]
         [ MarkdownString.toHtml markdownContent ]
+
+
+viewComments : List Comment -> Html Msg
+viewComments comments =
+    div [ class "comment-section" ]
+        [ h2 []
+            [ comments
+                |> List.length
+                |> numberOfCommentsString
+                |> text
+            ]
+        , div [ class "comments" ]
+            (List.map viewComment comments)
+        ]
+
+
+numberOfCommentsString : Int -> String
+numberOfCommentsString numberOfComments =
+    if numberOfComments == 0 then
+        "No comments"
+
+    else if numberOfComments == 1 then
+        "1 comment"
+
+    else
+        String.fromInt numberOfComments ++ " comments"
+
+
+viewComment : Comment -> Html Msg
+viewComment comment =
+    div [ class "comment" ]
+        [ div [ class "comment-username" ]
+            [ text (Comment.username comment) ]
+        , div [ class "comment-text" ]
+            [ text (Comment.text comment) ]
+        , div [ class "subcomments" ]
+            []
+        ]
 
 
 
