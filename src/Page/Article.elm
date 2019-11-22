@@ -11,7 +11,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http
 import LogElement
-import Markdown
+import MarkdownString exposing (Markdown)
 import ViewElements.Container as Container
 import ViewElements.Header as Header
 
@@ -93,7 +93,7 @@ viewContent : Model -> Html Msg
 viewContent model =
     case model of
         Loading ->
-            text "Spinner"
+            text ""
 
         Failure error ->
             text "error"
@@ -109,14 +109,26 @@ viewSuccess successModel =
 
 viewArticle : Article -> Html Msg
 viewArticle article =
-    div []
+    div [ class "article" ]
         [ h2 []
             [ article
                 |> Article.title
-                |> Markdown.toHtml
+                |> MarkdownString.toHtml
             ]
-        , text "body"
+        , article
+            |> Article.lead
+            |> Maybe.map viewLead
+            |> Maybe.withDefault (text "")
+        , article
+            |> Article.body
+            |> MarkdownString.toHtml
         ]
+
+
+viewLead : Markdown -> Html msg
+viewLead markdownContent =
+    div [ class "lead" ]
+        [ MarkdownString.toHtml markdownContent ]
 
 
 

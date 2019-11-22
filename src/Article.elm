@@ -1,9 +1,9 @@
-module Article exposing (Article, decode, id, title)
+module Article exposing (Article, body, decode, id, lead, title)
 
 import ArticleId exposing (ArticleId)
 import Json.Decode exposing (..)
 import Json.Decode.Pipeline exposing (..)
-import Markdown exposing (Markdown)
+import MarkdownString exposing (Markdown)
 
 
 type Article
@@ -48,9 +48,9 @@ decodeBackendData : Decoder BackendData
 decodeBackendData =
     Json.Decode.succeed BackendData
         |> required "id" ArticleId.decode
-        |> required "title" Markdown.decode
-        |> required "lead" (nullable Markdown.decode)
-        |> required "body" Markdown.decode
+        |> required "title" MarkdownString.decode
+        |> required "lead" (nullable MarkdownString.decode)
+        |> required "body" MarkdownString.decode
 
 
 type alias BackendData =

@@ -3,7 +3,7 @@ module ArticleSummary exposing (ArticleSummary, decode, id, title)
 import ArticleId exposing (ArticleId)
 import Json.Decode exposing (..)
 import Json.Decode.Pipeline exposing (..)
-import Markdown exposing (Markdown)
+import MarkdownString exposing (Markdown)
 
 
 type ArticleSummary
@@ -38,7 +38,7 @@ decodeBackendData : Decoder BackendData
 decodeBackendData =
     Json.Decode.succeed BackendData
         |> required "id" ArticleId.decode
-        |> required "title" Markdown.decode
+        |> required "title" MarkdownString.decode
 
 
 type alias BackendData =

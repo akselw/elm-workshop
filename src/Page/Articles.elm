@@ -15,7 +15,7 @@ import Html exposing (..)
 import Html.Attributes exposing (class, href)
 import Http
 import LogElement
-import Markdown
+import MarkdownString
 import ViewElements.Container as Container
 import ViewElements.Header as Header
 
@@ -115,7 +115,7 @@ viewArticle article =
         [ a [ href ("/article/" ++ (ArticleSummary.id >> ArticleId.toString) article) ]
             [ article
                 |> ArticleSummary.title
-                |> Markdown.toHtml
+                |> MarkdownString.toHtml
             ]
         ]
 

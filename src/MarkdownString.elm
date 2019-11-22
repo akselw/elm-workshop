@@ -1,7 +1,8 @@
-module Markdown exposing (Markdown, decode, toHtml)
+module MarkdownString exposing (Markdown, decode, toHtml)
 
 import Html exposing (Html)
 import Json.Decode exposing (Decoder)
+import Markdown
 
 
 type Markdown
@@ -16,4 +17,4 @@ decode =
 
 toHtml : Markdown -> Html msg
 toHtml (Markdown string) =
-    Html.text string
+    Markdown.toHtml [] string
