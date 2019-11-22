@@ -11,7 +11,7 @@ import Article exposing (Article)
 import ArticleId
 import Browser exposing (Document)
 import Html exposing (..)
-import Html.Attributes exposing (href)
+import Html.Attributes exposing (class, href)
 import Http
 import LogElement
 import ViewElements.Container as Container
@@ -74,9 +74,11 @@ viewDocument model =
 
 view : Model -> List (Html Msg)
 view model =
-    [ Header.header
-    , Container.mainContent
-        [ viewContent model
+    [ div [ class "app" ]
+        [ Header.header
+        , Container.mainContent
+            [ viewContent model
+            ]
         ]
     ]
 

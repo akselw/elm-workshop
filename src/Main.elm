@@ -3,6 +3,7 @@ module Main exposing (main)
 import Browser exposing (Document)
 import Browser.Navigation as Navigation
 import Html exposing (..)
+import Html.Attributes exposing (class)
 import Page.Article
 import Page.Articles
 import Routes
@@ -124,7 +125,7 @@ viewDocument model =
     case model.page of
         NotFound ->
             { title = "Page Not Found"
-            , body = [ text "Not found" ]
+            , body = [ div [ class "app" ] [ text "Not found" ] ]
             }
 
         Articles articlesModel ->

@@ -1,13 +1,13 @@
 @import './fonts';
 
-* {
-  font-family: Source Sans Pro, Arial, sans-serif;
-  color: #220C10;
-}
-
 body {
   margin: 0;
   background-color: #F7F7FF;
+}
+
+.app {
+  font-family: Source Sans Pro, Arial, sans-serif;
+  color: #220C10;
 }
 
 .header {
@@ -21,12 +21,25 @@ body {
   h1 {
     font-size: 24px;
   }
+
+  a:visited {
+    color: #220C10;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
 }
 
 .main-content-wrapper {
   display: flex;
   justify-content: center;
   padding-top: 2.5rem;
+
   .main-content {
     width: 40rem;
   }

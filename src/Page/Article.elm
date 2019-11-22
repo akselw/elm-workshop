@@ -80,9 +80,11 @@ viewDocument model =
 
 view : Model -> List (Html Msg)
 view model =
-    [ Header.header
-    , Container.mainContent
-        [ viewContent model ]
+    [ div [ class "app" ]
+        [ Header.header
+        , Container.mainContent
+            [ viewContent model ]
+        ]
     ]
 
 
@@ -106,7 +108,11 @@ viewSuccess successModel =
 
 viewArticle : Article -> Html Msg
 viewArticle article =
-    li [] [ a [ href ("/article/" ++ (Article.id >> ArticleId.toString) article) ] [ text (Article.title article) ] ]
+    div []
+        [ h2 []
+            [ text (Article.title article) ]
+        , text "body"
+        ]
 
 
 
