@@ -2,17 +2,18 @@ module Api exposing (getArticle, getArticles, getComments, writeToServerLog)
 
 import Article exposing (Article)
 import ArticleId exposing (ArticleId)
+import ArticleSummary exposing (ArticleSummary)
 import Comment exposing (Comment)
 import Http
 import Json.Decode
 import LogElement exposing (LogElement)
 
 
-getArticles : (Result Http.Error (List Article) -> msg) -> Cmd msg
+getArticles : (Result Http.Error (List ArticleSummary) -> msg) -> Cmd msg
 getArticles msg =
     Http.get
         { url = "/api/articles"
-        , expect = Http.expectJson msg (Json.Decode.list Article.decode)
+        , expect = Http.expectJson msg (Json.Decode.list ArticleSummary.decode)
         }
 
 

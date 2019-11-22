@@ -9,11 +9,13 @@ module Page.Articles exposing
 import Api
 import Article exposing (Article)
 import ArticleId
+import ArticleSummary exposing (ArticleSummary)
 import Browser exposing (Document)
 import Html exposing (..)
 import Html.Attributes exposing (class, href)
 import Http
 import LogElement
+import Markdown
 import ViewElements.Container as Container
 import ViewElements.Header as Header
 
@@ -29,7 +31,7 @@ type Model
 
 
 type alias SuccessModel =
-    { articles : List Article }
+    { articles : List ArticleSummary }
 
 
 
@@ -37,7 +39,7 @@ type alias SuccessModel =
 
 
 type Msg
-    = FetchedArticles (Result Http.Error (List Article))
+    = FetchedArticles (Result Http.Error (List ArticleSummary))
     | ErrorLogged (Result Http.Error ())
 
 
@@ -101,17 +103,20 @@ viewSuccess successModel =
     viewArticles successModel.articles
 
 
-viewArticles : List Article -> Html Msg
+viewArticles : List ArticleSummary -> Html Msg
 viewArticles articles =
     ul []
         (List.map viewArticle articles)
 
 
-viewArticle : Article -> Html Msg
+viewArticle : ArticleSummary -> Html Msg
 viewArticle article =
     li []
-        [ a [ href ("/article/" ++ (Article.id >> ArticleId.toString) article) ]
-            [ text (Article.title article) ]
+        [ a [ href ("/article/" ++ (ArticleSummary.id >> ArticleId.toString) article) ]
+            [ article
+                |> ArticleSummary.title
+                |> Markdown.toHtml
+            ]
         ]
 
 

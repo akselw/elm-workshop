@@ -11,6 +11,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http
 import LogElement
+import Markdown
 import ViewElements.Container as Container
 import ViewElements.Header as Header
 
@@ -110,7 +111,10 @@ viewArticle : Article -> Html Msg
 viewArticle article =
     div []
         [ h2 []
-            [ text (Article.title article) ]
+            [ article
+                |> Article.title
+                |> Markdown.toHtml
+            ]
         , text "body"
         ]
 

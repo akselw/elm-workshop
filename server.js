@@ -4,6 +4,7 @@ const path = require('path');
 const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
 const fs = require('fs');
+const YAML = require('yaml');
 const shortid = require('shortid');
 
 const databaseExists = fs.existsSync(path.resolve(__dirname, 'db.json'));
@@ -11,25 +12,51 @@ const databaseExists = fs.existsSync(path.resolve(__dirname, 'db.json'));
 const adapter = new FileSync('db.json');
 const db = low(adapter);
 
+const parseArticle = (text) => {
+    const splitArticle = text.split('\n---\n');
+    const metadata = YAML.parse(splitArticle[0]);
+    const body = splitArticle[1];
+    return {
+        ...metadata,
+        body: body
+    }
+};
+
+const readArticles = (dirname) =>  {
+    const filenames = fs.readdirSync(dirname);
+    return filenames.map((filename) => {
+        const file = fs.readFileSync(dirname + filename, 'utf-8');
+        return parseArticle(file);
+    });
+};
 
 db.defaults({ articles: [], comments: [] })
     .write();
+
+const writeArticleToDB = (article, id) => {
+    db.get('articles')
+        .push({
+            id: id,
+            title: article.title,
+            lead: article.lead || null,
+            body: article.body
+        })
+        .write();
+};
+
+const writeArticlesToDB = (listOfArticles, firstArticleId) => {
+    listOfArticles.forEach((article) => {
+        writeArticleToDB(article, shortid.generate());
+    });
+};
 
 if (!databaseExists) {
     console.log('INFO: Creating database in db.json, and writing articles to it.');
     const articleId = shortid.generate();
     const firstCommentId = shortid.generate();
     const firstAnswerId = shortid.generate();
-    db.get('articles')
-        .push({
-            id: articleId,
-            title: 'Lowdb is awesome',
-            lead: 'Lowdb is a database library for node, which uses json as a database.',
-            body: 'Lowdb is perfect for CLIs, small servers, Electron apps and npm packages in general.\n' +
-                '\n' +
-                'It supports Node, the browser and uses lodash API, so it\'s very simple to learn. Actually, if you know Lodash, you already know how to use lowdb 😉'
-        })
-        .write();
+    const articles = readArticles('articles/');
+    writeArticlesToDB(articles, articleId);
     db.get('comments')
         .push({
             id: firstCommentId,
