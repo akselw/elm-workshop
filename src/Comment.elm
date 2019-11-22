@@ -1,8 +1,8 @@
-module Comment exposing (Comment, decode, text, username)
+module Comment exposing (Comment, decode, subcomments, text, username)
 
 import CommentId exposing (CommentId)
 import Json.Decode exposing (Decoder)
-import Json.Decode.Pipeline exposing (required)
+import Json.Decode.Pipeline exposing (optional, required)
 
 
 type Comment
@@ -23,6 +23,11 @@ username (Comment info) =
     info.username
 
 
+subcomments : Comment -> List Comment
+subcomments (Comment info) =
+    info.subcomments
+
+
 
 --- DECODING ---
 
@@ -39,10 +44,12 @@ decodeBackendData =
         |> required "text" Json.Decode.string
         |> required "id" CommentId.decode
         |> required "username" Json.Decode.string
+        |> optional "comments" (Json.Decode.list (Json.Decode.lazy (\_ -> decode))) []
 
 
 type alias BackendData =
     { text : String
     , id : CommentId
     , username : String
+    , subcomments : List Comment
     }

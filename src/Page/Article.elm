@@ -48,7 +48,7 @@ update msg model =
                     ( LoadingComments article
                     , article
                         |> Article.id
-                        |> Api.getComments FetchedComments
+                        |> Api.getNestedComments FetchedComments
                     )
 
                 Err error ->
@@ -159,7 +159,7 @@ viewComments comments =
     div [ class "comment-section" ]
         [ h2 []
             [ comments
-                |> List.length
+                |> numberOfComments
                 |> numberOfCommentsString
                 |> text
             ]
@@ -169,15 +169,22 @@ viewComments comments =
 
 
 numberOfCommentsString : Int -> String
-numberOfCommentsString numberOfComments =
-    if numberOfComments == 0 then
+numberOfCommentsString numberOfComments_ =
+    if numberOfComments_ == 0 then
         "No comments"
 
-    else if numberOfComments == 1 then
+    else if numberOfComments_ == 1 then
         "1 comment"
 
     else
-        String.fromInt numberOfComments ++ " comments"
+        String.fromInt numberOfComments_ ++ " comments"
+
+
+numberOfComments : List Comment -> Int
+numberOfComments comments =
+    comments
+        |> List.map (\comment -> 1 + numberOfComments (Comment.subcomments comment))
+        |> List.sum
 
 
 viewComment : Comment -> Html Msg
@@ -187,8 +194,15 @@ viewComment comment =
             [ text (Comment.username comment) ]
         , div [ class "comment-text" ]
             [ text (Comment.text comment) ]
-        , div [ class "subcomments" ]
-            []
+        , if (Comment.subcomments >> List.isEmpty) comment then
+            text ""
+
+          else
+            div [ class "subcomments" ]
+                (comment
+                    |> Comment.subcomments
+                    |> List.map viewComment
+                )
         ]
 
 

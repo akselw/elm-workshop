@@ -1,4 +1,4 @@
-module Api exposing (getArticle, getArticles, getComments, writeToServerLog)
+module Api exposing (getArticle, getArticles, getComments, getNestedComments, writeToServerLog)
 
 import Article exposing (Article)
 import ArticleId exposing (ArticleId)
@@ -29,6 +29,14 @@ getComments : (Result Http.Error (List Comment) -> msg) -> ArticleId -> Cmd msg
 getComments msg articleId =
     Http.get
         { url = "/api/article/" ++ ArticleId.toString articleId ++ "/comments"
+        , expect = Http.expectJson msg (Json.Decode.list Comment.decode)
+        }
+
+
+getNestedComments : (Result Http.Error (List Comment) -> msg) -> ArticleId -> Cmd msg
+getNestedComments msg articleId =
+    Http.get
+        { url = "/api/article/" ++ ArticleId.toString articleId ++ "/nestedComments"
         , expect = Http.expectJson msg (Json.Decode.list Comment.decode)
         }
 
