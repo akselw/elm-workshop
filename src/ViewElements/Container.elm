@@ -1,4 +1,4 @@
-module ViewElements.Container exposing (mainContent)
+module ViewElements.Container exposing (buttonRow, mainContent)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -10,3 +10,9 @@ mainContent children =
         [ div [ class "main-content" ]
             children
         ]
+
+
+buttonRow : List (Html msg) -> Html msg
+buttonRow buttons =
+    div [ class "button-row" ]
+        buttons

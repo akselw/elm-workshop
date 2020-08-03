@@ -11,7 +11,7 @@ type ArticleSummary
 
 
 
---- CONTENTS
+--- CONTENTS ---
 
 
 title : ArticleSummary -> Markdown

@@ -7,7 +7,6 @@ module Page.Articles exposing
     )
 
 import Api
-import Article exposing (Article)
 import ArticleId
 import ArticleSummary exposing (ArticleSummary)
 import Browser exposing (Document)

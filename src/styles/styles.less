@@ -1,8 +1,7 @@
 @import './fonts';
+@import './viewElements';
+@import './variables';
 
-@backgroundColor: #F7F7FF;
-@textColor: #220C10;
-@headerColor: #F7D08A;
 
 body {
   margin: 0;
@@ -82,10 +81,13 @@ body {
       .comment-username {
         font-weight: 600;
       }
+
       .subcomments {
         margin-left: 1rem;
       }
     }
+  }
+  .write-new-comment {
   }
 }
 
@@ -99,13 +101,7 @@ body {
   }
 }
 
-
-//Colors - https://coolors.co/f79f79-f7d08a-f7f7ff-87b6a7-220c10
-//#F79F79 - Light salmon
-//#F7D08A - Peach-orange
-//#F7F7FF - Ghost white
-//#87B6A7 - Pewter blue
-//#220C10 - Licorice
-
-//Old colors:
-//#E3F09B - Key lime
+.button-row {
+  display: flex;
+  justify-content: flex-end;
+}

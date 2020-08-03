@@ -1,7 +1,5 @@
 module Page.Article exposing (Model, Msg, init, update, viewDocument)
 
---- MODEL ---
-
 import Api
 import Article exposing (Article)
 import ArticleId exposing (ArticleId)
@@ -12,8 +10,14 @@ import Html.Attributes exposing (..)
 import Http
 import LogElement
 import MarkdownString exposing (Markdown)
+import ViewElements.Button as Button
 import ViewElements.Container as Container
 import ViewElements.Header as Header
+import ViewElements.Textarea as Textarea
+
+
+
+--- MODEL ---
 
 
 type Model
@@ -36,6 +40,8 @@ type alias SuccessModel =
 type Msg
     = FetchedArticle (Result Http.Error Article)
     | FetchedComments (Result Http.Error (List Comment))
+    | CommentUpdated String
+    | CommentSaved
     | ErrorLogged (Result Http.Error ())
 
 
@@ -82,7 +88,13 @@ update msg model =
                 Err error ->
                     ( model, Cmd.none )
 
+        CommentUpdated string ->
+            ( model, Cmd.none )
+
         ErrorLogged result ->
+            ( model, Cmd.none )
+
+        CommentSaved ->
             ( model, Cmd.none )
 
 
@@ -165,6 +177,7 @@ viewComments comments =
             ]
         , div [ class "comments" ]
             (List.map viewComment comments)
+        , viewWriteComment
         ]
 
 
@@ -203,6 +216,18 @@ viewComment comment =
                     |> Comment.subcomments
                     |> List.map viewComment
                 )
+        ]
+
+
+viewWriteComment : Html Msg
+viewWriteComment =
+    div [ class "write-new-comment" ]
+        [ Textarea.textarea { label = "Add comment", onInput = CommentUpdated } "Tet"
+            |> Textarea.toHtml
+        , Container.buttonRow
+            [ Button.button CommentSaved "Post"
+                |> Button.toHtml
+            ]
         ]
 
 

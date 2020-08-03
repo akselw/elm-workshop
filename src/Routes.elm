@@ -2,7 +2,7 @@ module Routes exposing (Route(..), fromUrl)
 
 import ArticleId exposing (ArticleId)
 import Url exposing (Url)
-import Url.Parser exposing ((</>), Parser, s, string)
+import Url.Parser exposing ((</>), Parser, s)
 
 
 type Route
