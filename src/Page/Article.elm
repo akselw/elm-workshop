@@ -5,7 +5,7 @@ import Article exposing (Article)
 import ArticleId exposing (ArticleId)
 import Browser exposing (Document)
 import Comment exposing (Comment)
-import CommentForm exposing (CommentForm)
+import CommentForm exposing (CommentForm, ValidatedCommentForm)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http
@@ -37,8 +37,8 @@ type alias SuccessModel =
 
 type NewCommentState
     = WritingComment CommentForm
-    | SavingComment String
-    | ErrorSavingComment String Http.Error
+    | SavingComment ValidatedCommentForm
+    | ErrorSavingComment ValidatedCommentForm Http.Error
 
 
 
@@ -124,9 +124,16 @@ update msg model =
                 Success successModel ->
                     case successModel.newCommentState of
                         WritingComment commentForm ->
-                            ( Success { successModel | newCommentState = SavingComment (CommentForm.text commentForm) }
-                            , Api.createCommentOnArticle SavingCommentFinished (Article.id successModel.article) (CommentForm.text commentForm)
-                            )
+                            case CommentForm.validate commentForm of
+                                Just validatedForm ->
+                                    ( Success { successModel | newCommentState = SavingComment validatedForm }
+                                    , Api.createCommentOnArticle SavingCommentFinished (Article.id successModel.article) validatedForm
+                                    )
+
+                                Nothing ->
+                                    ( Success { successModel | newCommentState = WritingComment (CommentForm.showAllErrors commentForm) }
+                                    , Cmd.none
+                                    )
 
                         _ ->
                             ( model, Cmd.none )
@@ -138,7 +145,7 @@ update msg model =
             case model of
                 Success successModel ->
                     case successModel.newCommentState of
-                        SavingComment commentBoxText ->
+                        SavingComment form ->
                             case result of
                                 Ok comments ->
                                     ( Success
@@ -150,7 +157,7 @@ update msg model =
                                     )
 
                                 Err error ->
-                                    ( Success { successModel | newCommentState = ErrorSavingComment commentBoxText error }
+                                    ( Success { successModel | newCommentState = ErrorSavingComment form error }
                                     , error
                                         |> LogElement.fromHttpError "Post comment on article"
                                         |> Maybe.map (Api.writeToServerLog ErrorLogged)

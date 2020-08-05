@@ -4,6 +4,7 @@ import Article exposing (Article)
 import ArticleId exposing (ArticleId)
 import ArticleSummary exposing (ArticleSummary)
 import Comment exposing (Comment)
+import CommentForm exposing (ValidatedCommentForm)
 import Http
 import Json.Decode
 import Json.Encode
@@ -42,11 +43,11 @@ getNestedComments msg articleId =
         }
 
 
-createCommentOnArticle : (Result Http.Error (List Comment) -> msg) -> ArticleId -> String -> Cmd msg
-createCommentOnArticle msg articleId commentText =
+createCommentOnArticle : (Result Http.Error (List Comment) -> msg) -> ArticleId -> ValidatedCommentForm -> Cmd msg
+createCommentOnArticle msg articleId form =
     Http.post
         { url = "/api/article/" ++ ArticleId.toString articleId ++ "/comments"
-        , body = Http.jsonBody (Json.Encode.object [ ( "text", Json.Encode.string commentText ) ])
+        , body = Http.jsonBody (CommentForm.encode form)
         , expect = Http.expectJson msg (Json.Decode.list Comment.decode)
         }
 
