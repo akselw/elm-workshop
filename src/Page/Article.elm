@@ -5,6 +5,7 @@ import Article exposing (Article)
 import ArticleId exposing (ArticleId)
 import Browser exposing (Document)
 import Comment exposing (Comment)
+import CommentForm exposing (CommentForm)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http
@@ -35,7 +36,7 @@ type alias SuccessModel =
 
 
 type NewCommentState
-    = WritingComment String
+    = WritingComment CommentForm
     | SavingComment String
     | ErrorSavingComment String Http.Error
 
@@ -81,7 +82,7 @@ update msg model =
                             ( Success
                                 { article = article
                                 , comments = comments
-                                , newCommentState = WritingComment ""
+                                , newCommentState = WritingComment CommentForm.init
                                 }
                             , Cmd.none
                             )
@@ -101,8 +102,16 @@ update msg model =
             case model of
                 Success successModel ->
                     case successModel.newCommentState of
-                        WritingComment _ ->
-                            ( Success { successModel | newCommentState = WritingComment string }, Cmd.none )
+                        WritingComment commentForm ->
+                            ( Success
+                                { successModel
+                                    | newCommentState =
+                                        string
+                                            |> CommentForm.updateText commentForm
+                                            |> WritingComment
+                                }
+                            , Cmd.none
+                            )
 
                         _ ->
                             ( model, Cmd.none )
@@ -114,9 +123,9 @@ update msg model =
             case model of
                 Success successModel ->
                     case successModel.newCommentState of
-                        WritingComment commentBoxText ->
-                            ( Success { successModel | newCommentState = SavingComment commentBoxText }
-                            , Api.createCommentOnArticle SavingCommentFinished (Article.id successModel.article) commentBoxText
+                        WritingComment commentForm ->
+                            ( Success { successModel | newCommentState = SavingComment (CommentForm.text commentForm) }
+                            , Api.createCommentOnArticle SavingCommentFinished (Article.id successModel.article) (CommentForm.text commentForm)
                             )
 
                         _ ->
@@ -135,7 +144,7 @@ update msg model =
                                     ( Success
                                         { successModel
                                             | comments = comments
-                                            , newCommentState = WritingComment ""
+                                            , newCommentState = WritingComment CommentForm.init
                                         }
                                     , Cmd.none
                                     )
@@ -282,9 +291,11 @@ viewComment comment =
 viewWriteComment : SuccessModel -> Html Msg
 viewWriteComment { newCommentState } =
     case newCommentState of
-        WritingComment commentBoxText ->
+        WritingComment commentForm ->
             div [ class "write-new-comment" ]
-                [ Textarea.textarea { label = "Add comment", onInput = CommentUpdated } commentBoxText
+                [ commentForm
+                    |> CommentForm.text
+                    |> Textarea.textarea { label = "Add comment", onInput = CommentUpdated }
                     |> Textarea.toHtml
                 , Container.buttonRow
                     [ Button.button PostCommentButtonClicked "Post"
