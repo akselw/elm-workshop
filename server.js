@@ -208,6 +208,36 @@ server.get('/api/article/:articleId/nestedComments', express.json(), (req, res) 
     }
 });
 
+server.post('/api/article/:articleId/comments', express.json(), (req, res) => {
+    const articleId = req.params.articleId;
+    if (!articleId) {
+        res.status(404).send('Not found');
+        return;
+    }
+    const article = getArticle(articleId);
+
+    if (article) {
+        if (!req.body['text']) {
+            res.status(400).send('Field "text" is required in body');
+            return;
+        }
+        db.get('comments')
+            .push({
+                id: shortid.generate(),
+                username: 'User ?',
+                articleId: articleId,
+                commentOnCommentWithId: null,
+                text: req.body['text']
+            })
+            .write();
+
+        res.send(toNested(getCommentsForArticle(articleId)));
+
+    } else {
+        res.status(404).send('Not found');
+    }
+});
+
 server.all(['/api', '/api/*'], (req, res) => {
     res.status(404).send('Not found');
 });

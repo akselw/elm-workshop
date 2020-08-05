@@ -2,6 +2,7 @@ module ViewElements.Textarea exposing (Textarea, textarea, toHtml)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Html.Events exposing (onInput)
 
 
 type Textarea msg
@@ -30,6 +31,6 @@ toHtml (Textarea options) =
     div [ class "form-element" ]
         [ label [ class "label" ]
             [ span [ class "label-text" ] [ text options.label ]
-            , Html.textarea [ class "textarea", value options.value ] []
+            , Html.textarea [ class "textarea", value options.value, onInput options.onInput ] []
             ]
         ]

@@ -30,7 +30,14 @@ type Model
 type alias SuccessModel =
     { article : Article
     , comments : List Comment
+    , newCommentState : NewCommentState
     }
+
+
+type NewCommentState
+    = WritingComment String
+    | SavingComment String
+    | ErrorSavingComment String Http.Error
 
 
 
@@ -41,7 +48,8 @@ type Msg
     = FetchedArticle (Result Http.Error Article)
     | FetchedComments (Result Http.Error (List Comment))
     | CommentUpdated String
-    | CommentSaved
+    | PostCommentButtonClicked
+    | SavingCommentFinished (Result Http.Error (List Comment))
     | ErrorLogged (Result Http.Error ())
 
 
@@ -73,6 +81,7 @@ update msg model =
                             ( Success
                                 { article = article
                                 , comments = comments
+                                , newCommentState = WritingComment ""
                                 }
                             , Cmd.none
                             )
@@ -89,12 +98,63 @@ update msg model =
                     ( model, Cmd.none )
 
         CommentUpdated string ->
-            ( model, Cmd.none )
+            case model of
+                Success successModel ->
+                    case successModel.newCommentState of
+                        WritingComment _ ->
+                            ( Success { successModel | newCommentState = WritingComment string }, Cmd.none )
+
+                        _ ->
+                            ( model, Cmd.none )
+
+                _ ->
+                    ( model, Cmd.none )
+
+        PostCommentButtonClicked ->
+            case model of
+                Success successModel ->
+                    case successModel.newCommentState of
+                        WritingComment commentBoxText ->
+                            ( Success { successModel | newCommentState = SavingComment commentBoxText }
+                            , Api.createCommentOnArticle SavingCommentFinished (Article.id successModel.article) commentBoxText
+                            )
+
+                        _ ->
+                            ( model, Cmd.none )
+
+                _ ->
+                    ( model, Cmd.none )
+
+        SavingCommentFinished result ->
+            case model of
+                Success successModel ->
+                    case successModel.newCommentState of
+                        SavingComment commentBoxText ->
+                            case result of
+                                Ok comments ->
+                                    ( Success
+                                        { successModel
+                                            | comments = comments
+                                            , newCommentState = WritingComment ""
+                                        }
+                                    , Cmd.none
+                                    )
+
+                                Err error ->
+                                    ( Success { successModel | newCommentState = ErrorSavingComment commentBoxText error }
+                                    , error
+                                        |> LogElement.fromHttpError "Post comment on article"
+                                        |> Maybe.map (Api.writeToServerLog ErrorLogged)
+                                        |> Maybe.withDefault Cmd.none
+                                    )
+
+                        _ ->
+                            ( model, Cmd.none )
+
+                _ ->
+                    ( model, Cmd.none )
 
         ErrorLogged result ->
-            ( model, Cmd.none )
-
-        CommentSaved ->
             ( model, Cmd.none )
 
 
@@ -138,7 +198,7 @@ viewContent model =
 viewSuccess : SuccessModel -> List (Html Msg)
 viewSuccess successModel =
     [ viewArticle successModel.article
-    , viewComments successModel.comments
+    , viewComments successModel
     ]
 
 
@@ -166,18 +226,18 @@ viewLead markdownContent =
         [ MarkdownString.toHtml markdownContent ]
 
 
-viewComments : List Comment -> Html Msg
-viewComments comments =
+viewComments : SuccessModel -> Html Msg
+viewComments model =
     div [ class "comment-section" ]
         [ h2 []
-            [ comments
+            [ model.comments
                 |> numberOfComments
                 |> numberOfCommentsString
                 |> text
             ]
         , div [ class "comments" ]
-            (List.map viewComment comments)
-        , viewWriteComment
+            (List.map viewComment model.comments)
+        , viewWriteComment model
         ]
 
 
@@ -219,16 +279,21 @@ viewComment comment =
         ]
 
 
-viewWriteComment : Html Msg
-viewWriteComment =
-    div [ class "write-new-comment" ]
-        [ Textarea.textarea { label = "Add comment", onInput = CommentUpdated } "Tet"
-            |> Textarea.toHtml
-        , Container.buttonRow
-            [ Button.button CommentSaved "Post"
-                |> Button.toHtml
-            ]
-        ]
+viewWriteComment : SuccessModel -> Html Msg
+viewWriteComment { newCommentState } =
+    case newCommentState of
+        WritingComment commentBoxText ->
+            div [ class "write-new-comment" ]
+                [ Textarea.textarea { label = "Add comment", onInput = CommentUpdated } commentBoxText
+                    |> Textarea.toHtml
+                , Container.buttonRow
+                    [ Button.button PostCommentButtonClicked "Post"
+                        |> Button.toHtml
+                    ]
+                ]
+
+        _ ->
+            text ""
 
 
 

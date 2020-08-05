@@ -1,4 +1,4 @@
-module Api exposing (getArticle, getArticles, getComments, getNestedComments, writeToServerLog)
+module Api exposing (createCommentOnArticle, getArticle, getArticles, getComments, getNestedComments, writeToServerLog)
 
 import Article exposing (Article)
 import ArticleId exposing (ArticleId)
@@ -6,6 +6,7 @@ import ArticleSummary exposing (ArticleSummary)
 import Comment exposing (Comment)
 import Http
 import Json.Decode
+import Json.Encode
 import LogElement exposing (LogElement)
 
 
@@ -37,6 +38,15 @@ getNestedComments : (Result Http.Error (List Comment) -> msg) -> ArticleId -> Cm
 getNestedComments msg articleId =
     Http.get
         { url = "/api/article/" ++ ArticleId.toString articleId ++ "/nestedComments"
+        , expect = Http.expectJson msg (Json.Decode.list Comment.decode)
+        }
+
+
+createCommentOnArticle : (Result Http.Error (List Comment) -> msg) -> ArticleId -> String -> Cmd msg
+createCommentOnArticle msg articleId commentText =
+    Http.post
+        { url = "/api/article/" ++ ArticleId.toString articleId ++ "/comments"
+        , body = Http.jsonBody (Json.Encode.object [ ( "text", Json.Encode.string commentText ) ])
         , expect = Http.expectJson msg (Json.Decode.list Comment.decode)
         }
 
