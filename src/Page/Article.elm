@@ -14,6 +14,7 @@ import MarkdownString exposing (Markdown)
 import ViewElements.Button as Button
 import ViewElements.Container as Container
 import ViewElements.Header as Header
+import ViewElements.Input as Input
 import ViewElements.Textarea as Textarea
 
 
@@ -50,6 +51,7 @@ type Msg
     | FetchedComments (Result Http.Error (List Comment))
     | CommentUpdated String
     | CommentBoxLostFocus
+    | UsernameUpdated String
     | PostCommentButtonClicked
     | SavingCommentFinished (Result Http.Error (List Comment))
     | ErrorLogged (Result Http.Error ())
@@ -140,6 +142,9 @@ update msg model =
 
                 _ ->
                     ( model, Cmd.none )
+
+        UsernameUpdated string ->
+            ( model, Cmd.none )
 
         PostCommentButtonClicked ->
             case model of
@@ -322,7 +327,11 @@ viewWriteComment { newCommentState } =
     case newCommentState of
         WritingComment commentForm ->
             div [ class "write-new-comment" ]
-                [ commentForm
+                [ ""
+                    |> Input.input { label = "Username", onInput = UsernameUpdated }
+                    |> Input.withErrorMessage (Just "Error message")
+                    |> Input.toHtml
+                , commentForm
                     |> CommentForm.text
                     |> Textarea.textarea { label = "Add comment", onInput = CommentUpdated }
                     |> Textarea.withErrorMessage (CommentForm.textError commentForm)
