@@ -49,6 +49,7 @@ type Msg
     = FetchedArticle (Result Http.Error Article)
     | FetchedComments (Result Http.Error (List Comment))
     | CommentUpdated String
+    | CommentBoxLostFocus
     | PostCommentButtonClicked
     | SavingCommentFinished (Result Http.Error (List Comment))
     | ErrorLogged (Result Http.Error ())
@@ -108,6 +109,27 @@ update msg model =
                                     | newCommentState =
                                         string
                                             |> CommentForm.updateText commentForm
+                                            |> WritingComment
+                                }
+                            , Cmd.none
+                            )
+
+                        _ ->
+                            ( model, Cmd.none )
+
+                _ ->
+                    ( model, Cmd.none )
+
+        CommentBoxLostFocus ->
+            case model of
+                Success successModel ->
+                    case successModel.newCommentState of
+                        WritingComment commentForm ->
+                            ( Success
+                                { successModel
+                                    | newCommentState =
+                                        commentForm
+                                            |> CommentForm.showTextErrorMessage
                                             |> WritingComment
                                 }
                             , Cmd.none
@@ -304,6 +326,7 @@ viewWriteComment { newCommentState } =
                     |> CommentForm.text
                     |> Textarea.textarea { label = "Add comment", onInput = CommentUpdated }
                     |> Textarea.withErrorMessage (CommentForm.textError commentForm)
+                    |> Textarea.withOnBlur CommentBoxLostFocus
                     |> Textarea.toHtml
                 , Container.buttonRow
                     [ Button.button PostCommentButtonClicked "Post"

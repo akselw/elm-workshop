@@ -1,9 +1,9 @@
-module ViewElements.Textarea exposing (Textarea, textarea, toHtml, withErrorMessage)
+module ViewElements.Textarea exposing (Textarea, textarea, toHtml, withErrorMessage, withOnBlur)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Attributes.Aria exposing (ariaLive, role)
-import Html.Events exposing (onInput)
+import Html.Events exposing (onBlur, onInput)
 
 
 type Textarea msg
@@ -12,6 +12,7 @@ type Textarea msg
         , value : String
         , label : String
         , errorMessage : Maybe String
+        , onBlur : Maybe msg
         }
 
 
@@ -22,6 +23,7 @@ textarea { label, onInput } value =
         , value = value
         , label = label
         , errorMessage = Nothing
+        , onBlur = Nothing
         }
 
 
@@ -32,6 +34,11 @@ textarea { label, onInput } value =
 withErrorMessage : Maybe String -> Textarea msg -> Textarea msg
 withErrorMessage errorMessage (Textarea options) =
     Textarea { options | errorMessage = errorMessage }
+
+
+withOnBlur : msg -> Textarea msg -> Textarea msg
+withOnBlur msg (Textarea options) =
+    Textarea { options | onBlur = Just msg }
 
 
 
@@ -48,6 +55,9 @@ toHtml (Textarea options) =
                 , classList [ ( "error", options.errorMessage /= Nothing ) ]
                 , value options.value
                 , onInput options.onInput
+                , options.onBlur
+                    |> Maybe.map onBlur
+                    |> Maybe.withDefault noAttribute
                 ]
                 []
             , case options.errorMessage of
@@ -59,3 +69,8 @@ toHtml (Textarea options) =
                     text ""
             ]
         ]
+
+
+noAttribute : Html.Attribute msg
+noAttribute =
+    classList []
