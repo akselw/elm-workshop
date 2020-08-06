@@ -6,6 +6,7 @@ module CommentForm exposing
     , showAllErrors
     , showTextErrorMessage
     , text
+    , textError
     , updateText
     , validate
     )
@@ -39,6 +40,24 @@ updateText (CommentForm form) string =
 --- ERRORS ---
 
 
+textError : CommentForm -> Maybe String
+textError (CommentForm form) =
+    if form.showTextErrorMessage then
+        textErrorMessage form.text
+
+    else
+        Nothing
+
+
+textErrorMessage : String -> Maybe String
+textErrorMessage string =
+    if (String.toLower >> String.contains "typeclass") string then
+        Just "Do not mention typeclasses"
+
+    else
+        Nothing
+
+
 showTextErrorMessage : CommentForm -> CommentForm
 showTextErrorMessage (CommentForm form) =
     CommentForm { form | showTextErrorMessage = True }
@@ -60,7 +79,12 @@ type ValidatedCommentForm
 
 validate : CommentForm -> Maybe ValidatedCommentForm
 validate (CommentForm form) =
-    Just (ValidatedCommentForm { text = form.text })
+    case textErrorMessage form.text of
+        Just _ ->
+            Nothing
+
+        Nothing ->
+            Just (ValidatedCommentForm { text = form.text })
 
 
 

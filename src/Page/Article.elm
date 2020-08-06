@@ -303,6 +303,7 @@ viewWriteComment { newCommentState } =
                 [ commentForm
                     |> CommentForm.text
                     |> Textarea.textarea { label = "Add comment", onInput = CommentUpdated }
+                    |> Textarea.withErrorMessage (CommentForm.textError commentForm)
                     |> Textarea.toHtml
                 , Container.buttonRow
                     [ Button.button PostCommentButtonClicked "Post"

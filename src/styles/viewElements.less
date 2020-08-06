@@ -51,6 +51,16 @@
   border-color: @borderColor;
   border-radius: 4px;
   resize: none;
+
+  &.error {
+    border-color: @errorColor;
+    box-shadow: 0 0 0 1px @errorColor;
+  }
 }
 
+.error-message {
+  color: @errorColor;
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
 
