@@ -158,6 +158,26 @@ const getCommentsForArticle = (articleId) => (
         .values()
 );
 
+const getComment = (articleId, commentId) => (
+    db
+        .get('comments')
+        .filter({ articleId: articleId })
+        .filter({ commentId : commentId })
+        .value()
+)
+
+const createComment = (articleId, text, username, commentId) => {
+    db.get('comments')
+        .push({
+            id: shortid.generate(),
+            username: username || 'Guest user',
+            articleId: articleId,
+            commentOnCommentWithId: commentId || null,
+            text: text
+        })
+        .write();
+}
+
 server.get('/api/articles', (req, res) => {
     res.send(getArticles());
 });
@@ -221,16 +241,31 @@ server.post('/api/article/:articleId/comments', express.json(), (req, res) => {
             res.status(400).send('Field "text" is required in body');
             return;
         }
-        db.get('comments')
-            .push({
-                id: shortid.generate(),
-                username: req.body['username'] || 'Guest user',
-                articleId: articleId,
-                commentOnCommentWithId: null,
-                text: req.body['text']
-            })
-            .write();
+        createComment(articleId, req.body['text'], req.body['username']);
+        res.send(toNested(getCommentsForArticle(articleId)));
 
+    } else {
+        res.status(404).send('Not found');
+    }
+});
+
+
+server.post('/api/article/:articleId/comments/:commentId/comments', express.json(), (req, res) => {
+    const articleId = req.params.articleId;
+    const commentId = req.params.commentId;
+    if (!articleId || !commentId) {
+        res.status(404).send('Not found');
+        return;
+    }
+    const article = getArticle(articleId);
+    const comment = getComment(articleId, commentId);
+
+    if (article && comment) {
+        if (!req.body['text']) {
+            res.status(400).send('Field "text" is required in body');
+            return;
+        }
+        createComment(articleId, req.body['text'], req.body['username'], commentId);
         res.send(toNested(getCommentsForArticle(articleId)));
 
     } else {
