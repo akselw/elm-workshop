@@ -224,7 +224,7 @@ server.post('/api/article/:articleId/comments', express.json(), (req, res) => {
         db.get('comments')
             .push({
                 id: shortid.generate(),
-                username: 'User ?',
+                username: req.body['username'] || 'Guest user',
                 articleId: articleId,
                 commentOnCommentWithId: null,
                 text: req.body['text']
