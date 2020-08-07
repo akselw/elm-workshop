@@ -52,6 +52,7 @@ type Msg
     | CommentUpdated String
     | CommentBoxLostFocus
     | UsernameUpdated String
+    | UsernameFieldLostFocus
     | PostCommentButtonClicked
     | SavingCommentFinished (Result Http.Error (List Comment))
     | ErrorLogged (Result Http.Error ())
@@ -144,7 +145,46 @@ update msg model =
                     ( model, Cmd.none )
 
         UsernameUpdated string ->
-            ( model, Cmd.none )
+            case model of
+                Success successModel ->
+                    case successModel.newCommentState of
+                        WritingComment commentForm ->
+                            ( Success
+                                { successModel
+                                    | newCommentState =
+                                        string
+                                            |> CommentForm.updateUsername commentForm
+                                            |> WritingComment
+                                }
+                            , Cmd.none
+                            )
+
+                        _ ->
+                            ( model, Cmd.none )
+
+                _ ->
+                    ( model, Cmd.none )
+
+        UsernameFieldLostFocus ->
+            case model of
+                Success successModel ->
+                    case successModel.newCommentState of
+                        WritingComment commentForm ->
+                            ( Success
+                                { successModel
+                                    | newCommentState =
+                                        commentForm
+                                            |> CommentForm.showUsernameErrorMessage
+                                            |> WritingComment
+                                }
+                            , Cmd.none
+                            )
+
+                        _ ->
+                            ( model, Cmd.none )
+
+                _ ->
+                    ( model, Cmd.none )
 
         PostCommentButtonClicked ->
             case model of
@@ -327,9 +367,11 @@ viewWriteComment { newCommentState } =
     case newCommentState of
         WritingComment commentForm ->
             div [ class "write-new-comment" ]
-                [ ""
+                [ commentForm
+                    |> CommentForm.username
                     |> Input.input { label = "Username", onInput = UsernameUpdated }
-                    |> Input.withErrorMessage (Just "Error message")
+                    |> Input.withErrorMessage (CommentForm.usernameError commentForm)
+                    |> Input.withOnBlur UsernameFieldLostFocus
                     |> Input.toHtml
                 , commentForm
                     |> CommentForm.text
