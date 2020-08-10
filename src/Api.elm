@@ -1,13 +1,21 @@
-module Api exposing (createCommentOnArticle, getArticle, getArticles, getComments, getNestedComments, writeToServerLog)
+module Api exposing
+    ( createCommentOnArticle
+    , createSubcommentOnArticle
+    , getArticle
+    , getArticles
+    , getComments
+    , getNestedComments
+    , writeToServerLog
+    )
 
 import Article exposing (Article)
 import ArticleId exposing (ArticleId)
 import ArticleSummary exposing (ArticleSummary)
 import Comment exposing (Comment)
 import CommentForm exposing (ValidatedCommentForm)
+import CommentId exposing (CommentId)
 import Http
 import Json.Decode
-import Json.Encode
 import LogElement exposing (LogElement)
 
 
@@ -47,6 +55,15 @@ createCommentOnArticle : (Result Http.Error (List Comment) -> msg) -> ArticleId 
 createCommentOnArticle msg articleId form =
     Http.post
         { url = "/api/article/" ++ ArticleId.toString articleId ++ "/comments"
+        , body = Http.jsonBody (CommentForm.encode form)
+        , expect = Http.expectJson msg (Json.Decode.list Comment.decode)
+        }
+
+
+createSubcommentOnArticle : (Result Http.Error (List Comment) -> msg) -> ArticleId -> CommentId -> ValidatedCommentForm -> Cmd msg
+createSubcommentOnArticle msg articleId commentId form =
+    Http.post
+        { url = "/api/article/" ++ ArticleId.toString articleId ++ "/comments/" ++ CommentId.toString commentId ++ "/comments"
         , body = Http.jsonBody (CommentForm.encode form)
         , expect = Http.expectJson msg (Json.Decode.list Comment.decode)
         }
