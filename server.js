@@ -55,7 +55,7 @@ const writeArticlesToDB = (listOfArticles, firstArticleId) => {
 };
 
 if (!databaseExists) {
-    console.log('INFO: Creating database in db.json, and writing articles to it.');
+    console.log('[elm-workshop]: Creating database in db.json, and writing articles to it.');
     const articleId = shortid.generate();
     const firstCommentId = shortid.generate();
     const firstAnswerId = shortid.generate();
@@ -101,7 +101,7 @@ if (!databaseExists) {
     console.log(db.get('articles').value());
     console.log(db.get('comments').value());
 } else {
-    console.log('INFO: Using existing database. Delete or rename db.json to start a database from scratch.');
+    console.log('[elm-workshop]: Using existing database. Delete or rename db.json to start a database from scratch.');
 }
 
 const server = express();
