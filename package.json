@@ -14,7 +14,7 @@
     "lowdb": "^1.0.0",
     "parcel-bundler": "^1.12.4",
     "shortid": "^2.2.15",
-    "yaml": "^1.10.0"
+    "yaml": "1.7.2"
   },
   "devDependencies": {
     "elm-hot": "^1.1.5",
