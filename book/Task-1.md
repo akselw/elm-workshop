@@ -35,7 +35,7 @@ type alias SuccessModel =
 
 You should see your empty `commentText` field in the Elm debugger in the browser.
 
-## Task 1.2: Add a text field to the view
+## Task 1.2: Add a text area to the view
 
 Next, we want to display what is in the model in the view.
 Currently there is a function called `viewSuccess`, which looks like this:
@@ -47,7 +47,7 @@ viewSuccess successModel =
     ]
 ```
 
-1. Paste in the following function, for displaying a text field:
+1. Paste in the following function, for displaying a text area:
     ```elm
     viewWriteComment : SuccessModel -> Html Msg
     viewWriteComment successModel =
@@ -59,15 +59,15 @@ viewSuccess successModel =
     ```
 2. Call the function `viewWriteComment` from `viewSuccess`
 by adding it as the second element in the list, after the call to `viewArticle`.
-You should now see a text field below the article in the browser.
+You should now see a text area below the article in the browser.
 
-3. Notice that the text field in the browser contains the text "Example text".
+3. Notice that the text area in the browser contains the text "Example text".
 Change `viewWriteComment` to use the text in `SuccessModel`.
 You can change the text in `init` to make sure the view is rendering what is in the model.
 
 ## Task 1.3: Update the model when the user types
 
-You may have noticed that the text in the text field never changes:
+You may have noticed that the text in the text area never changes:
 it always just displays whatever is in the model.
 While we want the view to display whatever is in the model,
 we also want the model to change whenever a user types something.
@@ -87,7 +87,7 @@ You can still return `( model, Cmd.none )` in both the cases, for now.
 2. Update the model in the `Success` case,
 so that the string sent with the message is stored in the `commentText` field.
 
-The comment form should now update when you type!
+The comment text area should now update when you type!
 
-Next, we will start to prepare for send the new comment to the server.
+Next, we will start to prepare for sending the new comment to the server.
 
