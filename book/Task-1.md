@@ -2,7 +2,7 @@
 
 We will work in the page that displays a single article.
 Navigate to the app at [localhost:8080](http://localhost:8080),
-and choose the article at the top "Modelling in Elm".
+and choose the article at the top called "Modelling in Elm".
 The code for the article pages is located in `src/Page/Article` (not `Articles`).
 You don't have to understand everything in the page,
 we will go through the most important pieces.
