@@ -1,5 +1,12 @@
 # Task 1 - Writing comments
 
+We will work in the page that displays a single article.
+Navigate to the app at [localhost:8080](http://localhost:8080),
+and choose the article at the top "Modelling in Elm".
+The code for the article pages is located in `src/Page/Article` (not `Articles`).
+You don't have to understand everything in the page,
+we will go through the most important pieces.
+
 In this task, we will add the ability to write a comment on an article.
 We will store the text of the comment in the model,
 and display the text written thus far in the view.
