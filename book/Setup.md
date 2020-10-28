@@ -39,4 +39,4 @@ You should now see the following in your terminal:
 And if you go to [localhost:8080](http://localhost:8080) in your browser,
 you should see a working app. 
 
-To get started, jump to [Task 1](/book/Task-1.html).
+To get started, jump to [Task 1](/Task-1.html).
