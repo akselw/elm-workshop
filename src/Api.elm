@@ -39,7 +39,7 @@ getComments : (Result Http.Error (List Comment) -> msg) -> ArticleId -> Cmd msg
 getComments msg articleId =
     Http.get
         { url = "/api/article/" ++ ArticleId.toString articleId ++ "/comments"
-        , expect = Http.expectJson msg (Json.Decode.list Comment.decode)
+        , expect = Http.expectJson msg (Json.Decode.list Comment.decoder)
         }
 
 
@@ -47,7 +47,7 @@ getNestedComments : (Result Http.Error (List Comment) -> msg) -> ArticleId -> Cm
 getNestedComments msg articleId =
     Http.get
         { url = "/api/article/" ++ ArticleId.toString articleId ++ "/nestedComments"
-        , expect = Http.expectJson msg (Json.Decode.list Comment.decode)
+        , expect = Http.expectJson msg (Json.Decode.list Comment.decoder)
         }
 
 
@@ -56,7 +56,7 @@ createCommentOnArticle msg articleId form =
     Http.post
         { url = "/api/article/" ++ ArticleId.toString articleId ++ "/comments"
         , body = Http.jsonBody (CommentForm.encode form)
-        , expect = Http.expectJson msg (Json.Decode.list Comment.decode)
+        , expect = Http.expectJson msg (Json.Decode.list Comment.decoder)
         }
 
 
@@ -65,7 +65,7 @@ createSubcommentOnArticle msg articleId commentId form =
     Http.post
         { url = "/api/article/" ++ ArticleId.toString articleId ++ "/comments/" ++ CommentId.toString commentId ++ "/comments"
         , body = Http.jsonBody (CommentForm.encode form)
-        , expect = Http.expectJson msg (Json.Decode.list Comment.decode)
+        , expect = Http.expectJson msg (Json.Decode.list Comment.decoder)
         }
 
 

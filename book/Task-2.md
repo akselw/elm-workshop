@@ -199,7 +199,7 @@ and returns a `Msg`.
 
 The `Error` type in question here is from the `Http` package
 (you can see how it's defined [here](https://package.elm-lang.org/packages/elm/http/latest/Http#Error),
-it's pretty simple).
+it's simply a custom type that you can pattern match on).
 So we will define our message by adding the following to our `Msg` type:
 
 ```elm
