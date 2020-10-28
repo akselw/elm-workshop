@@ -98,8 +98,6 @@ if (!databaseExists) {
             text: 'I like modifying global variables 😊'
         })
         .write();
-    console.log(db.get('articles').value());
-    console.log(db.get('comments').value());
 } else {
     console.log('[elm-workshop]: Using existing database. Delete or rename db.json to start a database from scratch.');
 }
@@ -110,7 +108,6 @@ const entryFile = path.join(__dirname, './src/index.html');
 const bundler = new Bundler(entryFile, {});
 
 const toUnnested = (comment) => {
-    console.log({ comment });
     return ({
         id: comment.id,
         username: comment.username,
