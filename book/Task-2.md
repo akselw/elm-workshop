@@ -397,3 +397,16 @@ replace the `Http.post` call with a call to `Api.createCommentOnArticle` with th
 
 Your code should now compile, and if you try to click the button again, to post a comment,
 you should see another `SavingCommentFinished (Ok ())` in the Elm debugger!
+
+To double check that we actually end up sending a request, we can check the developer tools in the browser.
+Right click the page in the browser,
+and select "Inspect" in Chrome (or "Inspect element" in Firefox/Safari),
+and go to the "Network" tab.
+In the app, click the "Post" button again to see the request appear.
+You can click on the request and select the "Headers" tab,
+to see more info about it, like the URL and the request payload.
+And, if you select the "Preview"/"Response" tab,
+you can see what the browser returns as a response to our request.
+Turns out, there are already a lot of comments on the article, that we don't display!
+
+Next, we will get the comments from the server, and display them in our app!
