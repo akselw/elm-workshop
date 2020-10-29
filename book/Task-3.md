@@ -62,7 +62,7 @@ similar to the `createCommentOnArticle` we added in Task 2.4.
 Name the function `getComments` , with the following type signature:
 
     ```elm
-    getComments : (Result Http.Error (List Comment) -> msg) -> ArticleId -> Cmd msg
+    getComments : (Result Http.Error () -> msg) -> ArticleId -> Cmd msg
     ```
 
     And use the `Http.get` function to make the request,
