@@ -36,6 +36,7 @@ type alias SuccessModel =
 
 type Msg
     = FetchedArticle (Result Http.Error Article)
+    | CommentUpdated String
     | ErrorLogged (Result Http.Error ())
 
 
@@ -54,6 +55,9 @@ update msg model =
                         |> Maybe.map (Api.writeToServerLog ErrorLogged)
                         |> Maybe.withDefault Cmd.none
                     )
+
+        CommentUpdated string ->
+            ( model, Cmd.none )
 
         ErrorLogged result ->
             ( model, Cmd.none )
