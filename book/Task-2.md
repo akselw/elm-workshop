@@ -313,6 +313,9 @@ If you received an `Err`,
 you can set the `newCommentState` field to `ErrorSavingComment`,
 and if the `Result` is `Ok`, you can set the field back to `WritingComment`.
 
+9. You should also set the `newCommentState` field to `SavingComment`
+when you receive the `PostCommentButtonClicked` and start the POST request.
+
 ## Task 2.4: Cleaning up the code for our request
 
 Lastly in this task, we will clean up the code a bit.
