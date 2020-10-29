@@ -314,3 +314,13 @@ you should see an actual list of comments in the model after the comments are fi
 ```
 
 ## Task 3.4: Updating the list of comments after a post
+
+You can use the response from the POST request, to update the model.
+
+## Task 3.5: Nested comments
+
+The comments you get in the response when posting a comment are nested:
+each comment has a field `comments`, which is a new list of comments.
+Use the endpoint ```/api/article/{articleId}/nestedComments```,
+in `Api.getComments` to get nested comments.
+Decode the comments with subcomments.
