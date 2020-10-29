@@ -143,11 +143,11 @@ the first of which is of type `CommentId`,
 while the remaining two are of type `String`.
 
 This lines up quite well with what we are seeing in the response from the server,
-except that the `commentId` field is a `CommentId`.
-But actually, we don't have to decode every field we receive in a JSON,
-so we can start by removing the `commentId` field, to make our job a bit easier.
+except that the `id` field is a `CommentId`.
+But actually, we don't have to decode every field we receive in a JSON object,
+so we can start by removing the `id` field, to make our job a bit easier.
 
-1. Remove the `commentId` field from the `CommentInfo` record.
+1. Remove the `id` field from the `CommentInfo` record.
 
 2. To make a decoder for `Comment`, we are going to need a couple of packages,
 so import add the following two lines to the imports:
