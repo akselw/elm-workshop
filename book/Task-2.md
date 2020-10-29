@@ -307,6 +307,12 @@ so you can add the following tuple to the list:
 
     Which means that our request actually succeeded! Congratulations!
 
+8. Lastly, we will set the correct value in `newCommentState`,
+depending on what the request resulted in.
+If you received an `Err`,
+you can set the `newCommentState` field to `ErrorSavingComment`,
+and if the `Result` is `Ok`, you can set the field back to `WritingComment`.
+
 ## Task 2.4: Cleaning up the code for our request
 
 Lastly in this task, we will clean up the code a bit.
