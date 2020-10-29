@@ -22,7 +22,7 @@ When the user wants to post their comment, they will click a button to send thei
 There will then be some delay while the request is processed by the server,
 this might take a couple of milliseconds or multiple seconds,
 depending on a lot of factors (the users Internet speed, the speed of the server etc.),
-so we should account for this state, even though it will be very quickly while developing.
+so we should account for this state, even though the delay will be very short while developing.
 After some time the server will respond to our request, with either a response or an error.
 We therefore need a state for the error case,
 but we actually won't need a state for the success case:
