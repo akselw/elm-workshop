@@ -82,3 +82,104 @@
   margin-bottom: 0;
 }
 
+// Code below this point is subject to the following licence:
+
+// # The MIT License
+//
+// Copyright 2019 NAV (Arbeids- og velferdsdirektoratet) - The Norwegian Labour and Welfare Administration
+//
+// Permission is hereby granted, free of charge, to any person obtaining
+// a copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+// SPINNER
+
+.spinner-mixin(@name, @size) {
+  &--@{name} {
+    height: @size;
+    width: @size;
+    background-size: @size @size;
+  }
+}
+
+.button__spinner {
+  width: 0.8em;
+  height: 0.8em;
+  display: inline-block;
+  border-radius: 100%;
+  animation: button__spinner 1s infinite linear;
+  position: relative;
+  margin-left: 0.5em;
+  top: 0.1em;
+  border: 2px solid #5DB397;
+  border-bottom-color: white;
+  border-left-color: white;
+}
+
+@keyframes button__spinner {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  display: inline-block;
+  position: relative;
+  animation: spinner-rotate 1.4s linear infinite;
+
+  circle:nth-child(3) {
+    animation: spinner-dasharray 1.4s ease-in-out infinite;
+    stroke-dasharray: 80px, 200px;
+    stroke-dashoffset: 0;
+  }
+
+  .spinner-mixin(xxs, 16px);
+  .spinner-mixin(xs, 20px);
+  .spinner-mixin(s, 24px);
+  .spinner-mixin(m, 32px);
+  .spinner-mixin(l, 40px);
+  .spinner-mixin(xl, 64px);
+  .spinner-mixin(xxl, 128px);
+  .spinner-mixin(xxxl, 256px);
+}
+
+@keyframes spinner-rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spinner-dasharray {
+  0% {
+    stroke-dasharray: 1px, 200px;
+    stroke-dashoffset: 0;
+  }
+
+  50% {
+    stroke-dasharray: 100px, 200px;
+    stroke-dashoffset: -15px;
+  }
+
+  100% {
+    stroke-dasharray: 100px, 200px;
+    stroke-dashoffset: -120px;
+  }
+}
