@@ -1,5 +1,5 @@
 const express = require('express');
-const Bundler = require('parcel-bundler');
+const {Parcel}= require('@parcel/core');
 const path = require('path');
 const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
@@ -103,9 +103,6 @@ if (!databaseExists) {
 }
 
 const server = express();
-
-const entryFile = path.join(__dirname, './src/index.html');
-const bundler = new Bundler(entryFile, {});
 
 const toUnnested = (comment) => {
     return ({
@@ -282,9 +279,7 @@ server.post('/log', express.json(), (req, res) => {
     res.sendStatus(200);
 });
 
-server.use(bundler.middleware());
-
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 8081;
 server.listen(port, () => {
     console.log('Server listening on port', port);
 });
