@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "npm run start-elm & npm run start-server",
-    "start-elm": "parcel src/index.html",
-    "start-server": "node server.js"
+    "start": "node server.js"
   },
   "author": "Aksel Wester",
   "license": "ISC",
@@ -19,6 +17,7 @@
   },
   "devDependencies": {
     "@parcel/transformer-elm": "^2.0.1",
+    "@parcel/transformer-less": "^2.0.1",
     "elm-hot": "^1.1.5",
     "less": "^3.12.2",
     "node-elm-compiler": "^5.0.4"
