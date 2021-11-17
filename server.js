@@ -1,5 +1,7 @@
 const express = require('express');
 const { Parcel } = require('@parcel/core');
+const { createServer } = require('vite');
+const elmPlugin = require('vite-plugin-elm');
 const path = require('path');
 const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
@@ -286,24 +288,17 @@ server.listen(port, () => {
     console.log('[elm-workshop] Serving frontend from', '\x1b[1m', 'http://localhost:8080', '\033[0m', '\n');
 });
 
-const bundler = new Parcel({
-    entries: 'src/index.html',
-    defaultConfig: '@parcel/config-default',
-    shouldDisableCache: true,
-    serveOptions: {
-        port: 8080
-    },
-    hmrOptions: {
-        port: 8080
-    }
-});
-
-bundler.watch((e, r) => {
-    if (r && r.type === 'buildSuccess') {
-        console.log('\x1b[1m', '\x1b[32m', '✨ Build successful', '\033[0m');
-    } else if (r && r.type === 'buildFailure') {
-        r.diagnostics.forEach((diagnostic) => {
-            console.log(diagnostic.message);
-        });
-    }
-});
+;(async () => {
+    const server = await createServer({
+        plugins: [elmPlugin.default()],
+        root: './src',
+        server: {
+            port: 8080,
+            proxy: {
+                '/api': 'http://localhost:8081',
+                '/log': 'http://localhost:8081',
+            }
+        }
+    });
+    await server.listen();
+})();
