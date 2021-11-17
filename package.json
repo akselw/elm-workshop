@@ -11,16 +11,12 @@
   "dependencies": {
     "express": "^4.17.1",
     "lowdb": "^1.0.0",
-    "parcel": "^2.0.1",
     "shortid": "^2.2.15",
     "vite": "^2.6.14",
     "vite-plugin-elm": "^2.5.0",
     "yaml": "1.7.2"
   },
   "devDependencies": {
-    "@parcel/transformer-elm": "^2.0.1",
-    "@parcel/transformer-less": "^2.0.1",
-    "elm-hot": "^1.1.5",
     "elm-tooling": "^1.6.0",
     "less": "^3.12.2",
     "node-elm-compiler": "^5.0.4"

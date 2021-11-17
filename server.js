@@ -1,5 +1,4 @@
 const express = require('express');
-const { Parcel } = require('@parcel/core');
 const { createServer } = require('vite');
 const elmPlugin = require('vite-plugin-elm');
 const path = require('path');
